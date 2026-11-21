@@ -39,9 +39,14 @@ app.use(express.urlencoded({ extended: true }));
 // Database connection
 const MONGODB_URI = process.env.MONGODB_URI;
 mongoose
-  .connect(MONGODB_URI)
+  .connect(MONGODB_URI, { serverSelectionTimeoutMS: 20000 })
   .then(() => console.log("MongoDB connected successfully"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+  .catch((err) => {
+    console.error("MongoDB connection error:", err.message);
+    for (const [host, s] of err.reason?.servers || []) {
+      console.error("SERVER", host, "->", s.error ? s.error.message : "no error");
+    }
+  });
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
