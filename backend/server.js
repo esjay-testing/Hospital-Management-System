@@ -39,7 +39,7 @@ app.use(express.urlencoded({ extended: true }));
 // Database connection
 const MONGODB_URI = process.env.MONGODB_URI;
 mongoose
-  .connect(MONGODB_URI, { serverSelectionTimeoutMS: 20000 })
+    .connect(MONGODB_URI, { dbName: "hospital_management", serverSelectionTimeoutMS: 20000 })
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => {
     console.error("MongoDB connection error:", err.message);
