@@ -25,6 +25,7 @@ import toast from 'react-hot-toast'
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [showFeatures, setShowFeatures] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
 
@@ -95,6 +96,14 @@ const Login = () => {
             </div>
           </div>
 
+          <button
+            type="button"
+            onClick={() => setShowFeatures(true)}
+            className="lg:hidden mx-auto mb-6 block text-sm text-blue-100 underline"
+          >
+            View MediCare+ features
+          </button>
+          
           {/* Login Card */}
           <div className="bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-8">
             <div className="text-center mb-8">
@@ -301,13 +310,14 @@ const Login = () => {
       </div>
 
       {/* Mobile Features Panel */}
+      {showFeatures && (
       <div className="lg:hidden fixed inset-0 bg-gradient-to-br from-blue-600 to-cyan-700 z-40 p-8 overflow-y-auto">
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center space-x-3">
             <Stethoscope className="h-8 w-8 text-white" />
             <h2 className="text-xl font-bold text-white">MediCare+ Features</h2>
           </div>
-          <button className="text-white" onClick={() => {/* Close function */}}>
+          <button type="button" className="text-white" onClick={() => setShowFeatures(false)}>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -330,6 +340,7 @@ const Login = () => {
           ))}
         </div>
       </div>
+      )}
     </div>
   )
 }
