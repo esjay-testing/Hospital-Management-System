@@ -205,6 +205,9 @@ const seedDatabase = async () => {
     console.log('Cleared existing data');
 
     // Create users
+    for (const u of sampleUsers) {
+      u.password = await bcrypt.hash(u.password, 10);
+    }
     const users = await User.insertMany(sampleUsers);
     console.log(`Created ${users.length} users`);
 
