@@ -36,17 +36,33 @@ app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Database connection
-const MONGODB_URI = process.env.MONGODB_URI;
-mongoose
-    .connect(MONGODB_URI, { dbName: "hospital_management", serverSelectionTimeoutMS: 20000 })
-  .then(() => console.log("MongoDB connected successfully"))
-  .catch((err) => {
-    console.error("MongoDB connection error:", err.message);
-    for (const [host, s] of err.reason?.servers || []) {
-      console.error("SERVER", host, "->", s.error ? s.error.message : "no error");
-    }
-  });
+// Database connection (waits for the connection on every request)
+let connecting = null;
+
+async function connectDB() {
+  if (mongoose.connection.readyState === 1) return;
+  if (mongoose.connection.readyState === 0) connecting = null;
+  if (!connecting) {
+    connecting = mongoose
+      .connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 20000, maxPoolSize: 5 })
+      .then(() => console.log('MongoDB connected successfully'))
+      .catch((err) => {
+        connecting = null;
+        console.error('MongoDB connection error:', err.message);
+        throw err;
+      });
+  }
+  await connecting;
+}
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Database connection failed', error: err.message });
+  }
+});
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
