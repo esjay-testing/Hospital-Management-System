@@ -121,4 +121,39 @@ export const notificationsAPI = {
   getByType: (type) => api.get(`/notifications/type/${type}`),
 }
 
+export const usersAPI = {
+  getAll: (role) => api.get('/users', { params: { role } }),
+  create: (data) => api.post('/users', data),
+  setStatus: (id, isActive) => api.put(`/users/${id}/status`, { isActive }),
+  getPermissions: () => api.get('/users/permissions'),
+  updatePermissions: (role, permissions) => api.put(`/users/permissions/${role}`, { permissions }),
+}
+
+export const schedulingAPI = {
+  getDepartments: () => api.get('/scheduling/departments'),
+  createDepartment: (data) => api.post('/scheduling/departments', data),
+  updateDepartment: (id, data) => api.put(`/scheduling/departments/${id}`, data),
+  getRooms: () => api.get('/scheduling/rooms'),
+  createRoom: (data) => api.post('/scheduling/rooms', data),
+  setRoomStatus: (id, data) => api.put(`/scheduling/rooms/${id}/status`, data),
+  deleteRoom: (id) => api.delete(`/scheduling/rooms/${id}`),
+  getSchedules: () => api.get('/scheduling/schedules'),
+  createSchedule: (data) => api.post('/scheduling/schedules', data),
+  updateSchedule: (id, data) => api.put(`/scheduling/schedules/${id}`, data),
+  deleteSchedule: (id) => api.delete(`/scheduling/schedules/${id}`),
+}
+
+export const billingAPI = {
+  getInvoices: () => api.get('/billing/invoices'),
+  createInvoice: (data) => api.post('/billing/invoices', data),
+  sendInvoice: (id) => api.put(`/billing/invoices/${id}/send`),
+  recordPayment: (id, data) => api.post(`/billing/invoices/${id}/payments`, data),
+  issueRefund: (id, data) => api.post(`/billing/invoices/${id}/refunds`, data),
+  getTransactions: () => api.get('/billing/transactions'),
+  getClaims: () => api.get('/billing/claims'),
+  createClaim: (data) => api.post('/billing/claims', data),
+  updateClaimStatus: (id, data) => api.put(`/billing/claims/${id}/status`, data),
+  resubmitClaim: (id) => api.post(`/billing/claims/${id}/resubmit`),
+}
+
 export default api
