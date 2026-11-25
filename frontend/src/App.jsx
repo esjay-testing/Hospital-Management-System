@@ -24,6 +24,7 @@ import Payment from "./pages/Payment";
 import PatientHealthCard from "./pages/PatientHealthCard";
 import PatientDetail from "./pages/PatientDetail";
 import AdminOverview from "./pages/admin/AdminOverview";
+import UserManagement from "./pages/admin/UserManagement";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
@@ -136,6 +137,15 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["admin", "staff"]}>
               <AdminOverview />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="admin/users"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "staff"]}>
+              <UserManagement />
             </ProtectedRoute>
           }
         />

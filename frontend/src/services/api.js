@@ -121,14 +121,6 @@ export const notificationsAPI = {
   getByType: (type) => api.get(`/notifications/type/${type}`),
 }
 
-export const usersAPI = {
-  getAll: (role) => api.get('/users', { params: { role } }),
-  create: (data) => api.post('/users', data),
-  setStatus: (id, isActive) => api.put(`/users/${id}/status`, { isActive }),
-  getPermissions: () => api.get('/users/permissions'),
-  updatePermissions: (role, permissions) => api.put(`/users/permissions/${role}`, { permissions }),
-}
-
 export const schedulingAPI = {
   getDepartments: () => api.get('/scheduling/departments'),
   createDepartment: (data) => api.post('/scheduling/departments', data),
@@ -154,6 +146,14 @@ export const billingAPI = {
   createClaim: (data) => api.post('/billing/claims', data),
   updateClaimStatus: (id, data) => api.put(`/billing/claims/${id}/status`, data),
   resubmitClaim: (id) => api.post(`/billing/claims/${id}/resubmit`),
+}
+
+export const usersAPI = {
+  getAll: (role) => api.get('/users', { params: { role } }),
+  create: (data) => api.post('/users', data),
+  setStatus: (id, isActive) => api.put(`/users/${id}/status`, { isActive }),
+  getPermissions: () => api.get('/users/permissions'),
+  updatePermissions: (role, permissions) => api.put(`/users/permissions/${role}`, { permissions }),
 }
 
 export default api

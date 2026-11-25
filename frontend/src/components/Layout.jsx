@@ -255,6 +255,7 @@ const Layout = () => {
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: Home, roles: ['admin', 'staff', 'doctor', 'patient'] },
     { name: 'Operations', href: '/admin/overview', icon: ClipboardList, roles: ['admin', 'staff'] },
+    { name: 'Users', href: '/admin/users', icon: Users, roles: ['admin', 'staff'] },
     { name: 'Patients', href: '/patients', icon: Users, roles: ['admin', 'staff'] },
     { name: 'Doctors', href: '/doctors', icon: UserCheck, roles: ['admin', 'staff', 'patient'] },
     { name: 'Appointments', href: '/appointments', icon: Calendar, roles: ['staff', 'doctor', 'patient'] },

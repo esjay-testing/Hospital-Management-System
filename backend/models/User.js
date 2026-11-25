@@ -64,6 +64,9 @@ const userSchema = new mongoose.Schema({
   licenseNumber: String,
   experience: Number,
   consultationFee: Number,
+    department: String,
+    shift: String,
+    deskNumber: String,
   isAvailable: {
     type: Boolean,
     default: true
