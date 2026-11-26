@@ -4,8 +4,15 @@ const { authenticateToken, authorize } = require('../middleware/auth');
 
 const router = express.Router();
 
+// Administrators must not see medical records or health cards.
+const blockAdmin = (req, res, next) =>
+  req.user && req.user.role === 'admin'
+    ? res.status(403).json({ success: false, message: 'Administrators cannot view medical records or health cards' })
+    : next();
+
+
 // Get all medical records
-router.get('/', authenticateToken, authorize('admin', 'staff', 'doctor'), async (req, res) => {
+router.get('/', authenticateToken, authorize('staff', 'doctor'), async (req, res) => {
   try {
     let query = {};
     
@@ -37,7 +44,7 @@ router.get('/', authenticateToken, authorize('admin', 'staff', 'doctor'), async 
 });
 
 // Get medical records for a specific patient
-router.get('/patient/:patientId', authenticateToken, async (req, res) => {
+router.get('/patient/:patientId', authenticateToken, blockAdmin, async (req, res) => {
   try {
     const { patientId } = req.params;
     
@@ -72,7 +79,7 @@ router.get('/patient/:patientId', authenticateToken, async (req, res) => {
 });
 
 // Get single medical record
-router.get('/:id', authenticateToken, authorize('admin', 'staff', 'doctor'), async (req, res) => {
+router.get('/:id', authenticateToken, authorize('staff', 'doctor'), async (req, res) => {
   try {
     const medicalRecord = await MedicalRecord.findById(req.params.id)
       .populate('patientId', 'firstName lastName email phone')
@@ -110,7 +117,7 @@ router.get('/:id', authenticateToken, authorize('admin', 'staff', 'doctor'), asy
 });
 
 // Create new medical record
-router.post('/', authenticateToken, authorize('admin', 'staff', 'doctor'), async (req, res) => {
+router.post('/', authenticateToken, authorize('staff', 'doctor'), async (req, res) => {
   try {
     const { patientId, appointmentId, recordType, diagnosis, treatment, labResults, vitalSigns, followUp, doctorNotes, patientComplaints } = req.body;
 
@@ -165,7 +172,7 @@ router.post('/', authenticateToken, authorize('admin', 'staff', 'doctor'), async
 });
 
 // Update medical record
-router.put('/:id', authenticateToken, authorize('admin', 'staff', 'doctor'), async (req, res) => {
+router.put('/:id', authenticateToken, authorize('staff', 'doctor'), async (req, res) => {
   try {
     const medicalRecord = await MedicalRecord.findById(req.params.id);
     
@@ -212,7 +219,7 @@ router.put('/:id', authenticateToken, authorize('admin', 'staff', 'doctor'), asy
 });
 
 // Complete medical record
-router.put('/:id/complete', authenticateToken, authorize('admin', 'staff', 'doctor'), async (req, res) => {
+router.put('/:id/complete', authenticateToken, authorize('staff', 'doctor'), async (req, res) => {
   try {
     const medicalRecord = await MedicalRecord.findById(req.params.id);
     
@@ -249,7 +256,7 @@ router.put('/:id/complete', authenticateToken, authorize('admin', 'staff', 'doct
 });
 
 // Add medication to treatment
-router.post('/:id/medication', authenticateToken, authorize('admin', 'staff', 'doctor'), async (req, res) => {
+router.post('/:id/medication', authenticateToken, authorize('staff', 'doctor'), async (req, res) => {
   try {
     const medicalRecord = await MedicalRecord.findById(req.params.id);
     
@@ -305,7 +312,7 @@ router.post('/:id/medication', authenticateToken, authorize('admin', 'staff', 'd
 });
 
 // Add lab result
-router.post('/:id/lab-result', authenticateToken, authorize('admin', 'staff', 'doctor'), async (req, res) => {
+router.post('/:id/lab-result', authenticateToken, authorize('staff', 'doctor'), async (req, res) => {
   try {
     const medicalRecord = await MedicalRecord.findById(req.params.id);
     

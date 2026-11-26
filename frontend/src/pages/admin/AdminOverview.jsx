@@ -12,7 +12,7 @@ import {
   Clock,
   RefreshCw,
 } from 'lucide-react'
-import { appointmentsAPI, patientsAPI, doctorsAPI, healthCardsAPI, schedulingAPI, billingAPI } from '../../services/api'
+import { appointmentsAPI, patientsAPI, doctorsAPI, schedulingAPI, billingAPI } from '../../services/api'
 
 // ---------- helpers ----------
 const pick = (res, key) => res?.data?.data?.[key] || res?.data?.[key] || []
@@ -60,7 +60,6 @@ const AdminOverview = () => {
   const apptQ = useQuery('appointments', () => appointmentsAPI.getAll())
   const patientsQ = useQuery('patients', () => patientsAPI.getAll())
   const doctorsQ = useQuery('doctors', () => doctorsAPI.getAll())
-  const requestsQ = useQuery('health-card-requests', () => healthCardsAPI.getAllRequests())
   const roomsQ = useQuery('rooms', () => schedulingAPI.getRooms())
   const txnQ = useQuery('transactions', () => billingAPI.getTransactions())
   const invoicesQ = useQuery('invoices', () => billingAPI.getInvoices())
@@ -78,7 +77,6 @@ const AdminOverview = () => {
     queryClient.invalidateQueries('appointments')
     queryClient.invalidateQueries('patients')
     queryClient.invalidateQueries('doctors')
-    queryClient.invalidateQueries('health-card-requests')
     queryClient.invalidateQueries('rooms')
     queryClient.invalidateQueries('transactions')
     queryClient.invalidateQueries('invoices')
@@ -89,7 +87,6 @@ const AdminOverview = () => {
     const appointments = pick(apptQ.data, 'appointments')
     const patients = pick(patientsQ.data, 'patients')
     const doctors = pick(doctorsQ.data, 'doctors')
-    const requests = pick(requestsQ.data, 'requests')
     const now = new Date()
 
     const today = appointments
@@ -134,12 +131,10 @@ const AdminOverview = () => {
     const activeDoctors = doctors.filter((d) => d.isActive !== false)
     const unavailableDoctors = activeDoctors.filter((d) => d.isAvailable === false).length
     const unpaidCompleted = appointments.filter((a) => a.status === 'completed' && !a.paymentStatus).length
-    const pendingCards = requests.filter((r) => r.status === 'pending').length
 
     const alerts = []
     if (counts.scheduled > 0) alerts.push({ tone: 'amber', text: `${counts.scheduled} appointment${counts.scheduled > 1 ? 's' : ''} today not checked in yet` })
     if (unpaidCompleted > 0) alerts.push({ tone: 'amber', text: `${unpaidCompleted} completed visit${unpaidCompleted > 1 ? 's' : ''} with no payment recorded` })
-    if (pendingCards > 0) alerts.push({ tone: 'amber', text: `${pendingCards} health card request${pendingCards > 1 ? 's' : ''} waiting for review` })
     if (unavailableDoctors > 0) alerts.push({ tone: 'amber', text: `${unavailableDoctors} doctor${unavailableDoctors > 1 ? 's' : ''} marked unavailable` })
     if (overdueInvoices > 0) alerts.push({ tone: 'red', text: `${overdueInvoices} overdue invoice${overdueInvoices > 1 ? 's' : ''}` })
     if (deniedClaims > 0) alerts.push({ tone: 'red', text: `${deniedClaims} insurance claim${deniedClaims > 1 ? 's were' : ' was'} denied and may need resubmitting` })
@@ -147,7 +142,7 @@ const AdminOverview = () => {
     if (counts.no_show > 0) alerts.push({ tone: 'red', text: `${counts.no_show} no-show${counts.no_show > 1 ? 's' : ''} today` })
 
     return { today, counts, patients, activeDoctors, revenueToday, revenueMonth, revenueSource, alerts }
-  }, [apptQ.data, patientsQ.data, doctorsQ.data, requestsQ.data, txnQ.data, invoicesQ.data, claimsQ.data])
+  }, [apptQ.data, patientsQ.data, doctorsQ.data, txnQ.data, invoicesQ.data, claimsQ.data])
 
   const rooms = pick(roomsQ.data, 'rooms')
   const roomSummary = roomsQ.data?.data?.data?.summary
@@ -278,7 +273,6 @@ const AdminOverview = () => {
                       </div>
                       <div className="truncate text-xs text-slate-500">
                         Dr. {doctor.lastName || a.doctorName || 'Unassigned'}
-                        {a.reason ? `, ${a.reason}` : ''}
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -327,7 +321,7 @@ const AdminOverview = () => {
             </ul>
           )}
           <p className="border-t border-slate-100 p-4 text-xs text-slate-500">
-            Pharmacy stock alerts will appear here once the Inventory module is added.
+            Alerts update by themselves as stock, invoices and claims change.
           </p>
         </section>
       </div>

@@ -5,13 +5,24 @@ const { authenticateToken, authorize, canAccessOwnData } = require('../middlewar
 
 const router = express.Router();
 
+// Administrators must not see medical records or health cards.
+const blockAdmin = (req, res, next) =>
+  req.user && req.user.role === 'admin'
+    ? res.status(403).json({ success: false, message: 'Administrators cannot view medical records or health cards' })
+    : next();
+
+// Medical details an administrator never receives.
+const ADMIN_HIDDEN = '-password -bloodType -allergies -emergencyContact';
+const patientFields = (req) => (req.user && req.user.role === 'admin' ? ADMIN_HIDDEN : '-password');
+
+
 // Get all patients (admin/staff only)
 router.get('/', authenticateToken, authorize('admin', 'staff'), async (req, res) => {
   try {
     console.log('Fetching all patients. Requested by:', req.user.email, 'Role:', req.user.role);
     
     const patients = await User.find({ role: 'patient' })
-      .select('-password')
+      .select(patientFields(req))
       .sort({ createdAt: -1 });
 
     console.log('Found patients:', patients.length);
@@ -36,7 +47,7 @@ router.get('/', authenticateToken, authorize('admin', 'staff'), async (req, res)
 // Get single patient
 router.get('/:id', authenticateToken, canAccessOwnData, async (req, res) => {
   try {
-    const patient = await User.findById(req.params.id).select('-password');
+    const patient = await User.findById(req.params.id).select(patientFields(req));
     
     if (!patient) {
       return res.status(404).json({
@@ -219,7 +230,7 @@ router.delete('/:id/permanent', authenticateToken, authorize('admin'), async (re
 });
 
 // Get patient's health card
-router.get('/:id/health-card', authenticateToken, canAccessOwnData, async (req, res) => {
+router.get('/:id/health-card', authenticateToken, blockAdmin, canAccessOwnData, async (req, res) => {
   try {
     const healthCard = await HealthCard.findOne({ patientId: req.params.id });
     
@@ -247,3 +258,4 @@ router.get('/:id/health-card', authenticateToken, canAccessOwnData, async (req, 
 });
 
 module.exports = router;
+

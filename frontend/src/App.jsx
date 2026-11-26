@@ -25,6 +25,8 @@ import PatientHealthCard from "./pages/PatientHealthCard";
 import PatientDetail from "./pages/PatientDetail";
 import AdminOverview from "./pages/admin/AdminOverview";
 import UserManagement from "./pages/admin/UserManagement";
+import SchedulingResources from "./pages/admin/SchedulingResources";
+import BillingClaims from "./pages/admin/BillingClaims";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
@@ -150,6 +152,24 @@ const AppRoutes = () => {
           }
         />
 
+        <Route
+          path="admin/scheduling"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "staff"]}>
+              <SchedulingResources />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="admin/billing"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "staff"]}>
+              <BillingClaims />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Doctor Management */}
         <Route
           path="doctors"
@@ -187,7 +207,7 @@ const AppRoutes = () => {
             ) : user?.role === "doctor" ? (
               <DoctorMedicalRecords />
             ) : (
-              <ProtectedRoute allowedRoles={["admin", "staff"]}>
+              <ProtectedRoute allowedRoles={["doctor", "staff"]}>
                 <MedicalRecords />
               </ProtectedRoute>
             )

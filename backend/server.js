@@ -73,6 +73,9 @@ app.use('/api/medical-records', require('./routes/medicalRecords'));
 app.use('/api/health-cards', require('./routes/healthCards'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/users', require('./routes/users'));
+app.use('/api/scheduling', require('./routes/scheduling'));
+app.use('/api/billing', require('./routes/billing'));
+app.use('/api/dashboard', require('./routes/dashboard'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

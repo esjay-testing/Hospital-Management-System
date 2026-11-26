@@ -26,8 +26,9 @@ import {
   ChevronRight
 } from 'lucide-react'
 import { appointmentsAPI, patientsAPI, doctorsAPI, medicalRecordsAPI, healthCardsAPI } from '../services/api'
+import AdminDashboard from './admin/AdminDashboard'
 
-const Dashboard = () => {
+const RoleDashboard = () => {
   const { user, isAdmin, isDoctor, isStaff, isPatient } = useAuth()
   const navigate = useNavigate()
 
@@ -595,4 +596,11 @@ const UpcomingAppointmentsSection = ({ upcomingAppointments, getStatusColor, isP
 }
 
 
+// Administrators get their own dashboard. Everyone else keeps the original one.
+const Dashboard = () => {
+  const { isAdmin } = useAuth()
+  return isAdmin ? <AdminDashboard /> : <RoleDashboard />
+}
+
 export default Dashboard
+

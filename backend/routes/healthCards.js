@@ -6,8 +6,15 @@ const { authenticateToken, authorize, canAccessOwnData } = require('../middlewar
 
 const router = express.Router();
 
+// Administrators must not see medical records or health cards.
+const blockAdmin = (req, res, next) =>
+  req.user && req.user.role === 'admin'
+    ? res.status(403).json({ success: false, message: 'Administrators cannot view medical records or health cards' })
+    : next();
+
+
 // Get all health cards (admin/staff only)
-router.get('/', authenticateToken, authorize('admin', 'staff'), async (req, res) => {
+router.get('/', authenticateToken, authorize('staff'), async (req, res) => {
   try {
     const healthCards = await HealthCard.find()
       .populate('patientId', 'firstName lastName email phone')
@@ -33,7 +40,7 @@ router.get('/', authenticateToken, authorize('admin', 'staff'), async (req, res)
 // ===== HEALTH CARD REQUEST ROUTES (Must be before /:id route) =====
 
 // Get all health card requests (admin/staff only)
-router.get('/requests', authenticateToken, authorize('admin', 'staff'), async (req, res) => {
+router.get('/requests', authenticateToken, authorize('staff'), async (req, res) => {
   try {
     const requests = await HealthCardRequest.find()
       .populate('patientId', 'firstName lastName email phone')
@@ -145,7 +152,7 @@ router.get('/card/:cardNumber', async (req, res) => {
 });
 
 // Get health card by patient ID
-router.get('/patient/:patientId', authenticateToken, async (req, res) => {
+router.get('/patient/:patientId', authenticateToken, blockAdmin, async (req, res) => {
   try {
     console.log('Fetching health card for patient:', req.params.patientId);
     console.log('Requested by user:', req.user._id, 'Role:', req.user.role);
@@ -188,7 +195,7 @@ router.get('/patient/:patientId', authenticateToken, async (req, res) => {
 });
 
 // Get health card by ID (Must be after specific routes)
-router.get('/:id', authenticateToken, async (req, res) => {
+router.get('/:id', authenticateToken, blockAdmin, async (req, res) => {
   try {
     const healthCard = await HealthCard.findById(req.params.id)
       .populate('patientId', 'firstName lastName email phone');
@@ -229,7 +236,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
 });
 
 // Create new health card
-router.post('/', authenticateToken, authorize('admin', 'staff'), async (req, res) => {
+router.post('/', authenticateToken, authorize('staff'), async (req, res) => {
   try {
     console.log('Creating health card with data:', req.body);
     const { patientId, expiryDate, bloodType, allergies, emergencyContact } = req.body;
@@ -301,7 +308,7 @@ router.post('/', authenticateToken, authorize('admin', 'staff'), async (req, res
 });
 
 // Update health card
-router.put('/:id', authenticateToken, authorize('admin', 'staff'), async (req, res) => {
+router.put('/:id', authenticateToken, authorize('staff'), async (req, res) => {
   try {
     const healthCard = await HealthCard.findById(req.params.id);
     
@@ -340,7 +347,7 @@ router.put('/:id', authenticateToken, authorize('admin', 'staff'), async (req, r
 });
 
 // Block health card
-router.put('/:id/block', authenticateToken, authorize('admin', 'staff'), async (req, res) => {
+router.put('/:id/block', authenticateToken, authorize('staff'), async (req, res) => {
   try {
     const { reason } = req.body;
     const healthCard = await HealthCard.findById(req.params.id);
@@ -370,7 +377,7 @@ router.put('/:id/block', authenticateToken, authorize('admin', 'staff'), async (
 });
 
 // Unblock health card
-router.put('/:id/unblock', authenticateToken, authorize('admin', 'staff'), async (req, res) => {
+router.put('/:id/unblock', authenticateToken, authorize('staff'), async (req, res) => {
   try {
     const healthCard = await HealthCard.findById(req.params.id);
     
@@ -455,7 +462,7 @@ router.post('/request', authenticateToken, authorize('patient'), async (req, res
 });
 
 // Approve health card request (admin/staff only)
-router.put('/request/:id/approve', authenticateToken, authorize('admin', 'staff'), async (req, res) => {
+router.put('/request/:id/approve', authenticateToken, authorize('staff'), async (req, res) => {
   try {
     const { expiryDate } = req.body;
 
@@ -520,7 +527,7 @@ router.put('/request/:id/approve', authenticateToken, authorize('admin', 'staff'
 });
 
 // Reject health card request (admin/staff only)
-router.put('/request/:id/reject', authenticateToken, authorize('admin', 'staff'), async (req, res) => {
+router.put('/request/:id/reject', authenticateToken, authorize('staff'), async (req, res) => {
   try {
     const { rejectionReason } = req.body;
 

@@ -121,6 +121,14 @@ export const notificationsAPI = {
   getByType: (type) => api.get(`/notifications/type/${type}`),
 }
 
+export const usersAPI = {
+  getAll: (role) => api.get('/users', { params: { role } }),
+  create: (data) => api.post('/users', data),
+  setStatus: (id, isActive) => api.put(`/users/${id}/status`, { isActive }),
+  getPermissions: () => api.get('/users/permissions'),
+  updatePermissions: (role, permissions) => api.put(`/users/permissions/${role}`, { permissions }),
+}
+
 export const schedulingAPI = {
   getDepartments: () => api.get('/scheduling/departments'),
   createDepartment: (data) => api.post('/scheduling/departments', data),
@@ -133,6 +141,18 @@ export const schedulingAPI = {
   createSchedule: (data) => api.post('/scheduling/schedules', data),
   updateSchedule: (id, data) => api.put(`/scheduling/schedules/${id}`, data),
   deleteSchedule: (id) => api.delete(`/scheduling/schedules/${id}`),
+}
+
+export const inventoryAPI = {
+  getItems: () => api.get('/inventory/items'),
+  createItem: (data) => api.post('/inventory/items', data),
+  updateItem: (id, data) => api.put(`/inventory/items/${id}`, data),
+  restock: (id, data) => api.post(`/inventory/items/${id}/restock`, data),
+  dispense: (id, data) => api.post(`/inventory/items/${id}/dispense`, data),
+  adjust: (id, data) => api.post(`/inventory/items/${id}/adjust`, data),
+  setBatchStatus: (id, batch, status) =>
+    api.post(`/inventory/items/${id}/batches/${encodeURIComponent(batch)}/status`, { status }),
+  getMovements: () => api.get('/inventory/movements'),
 }
 
 export const billingAPI = {
@@ -148,12 +168,8 @@ export const billingAPI = {
   resubmitClaim: (id) => api.post(`/billing/claims/${id}/resubmit`),
 }
 
-export const usersAPI = {
-  getAll: (role) => api.get('/users', { params: { role } }),
-  create: (data) => api.post('/users', data),
-  setStatus: (id, isActive) => api.put(`/users/${id}/status`, { isActive }),
-  getPermissions: () => api.get('/users/permissions'),
-  updatePermissions: (role, permissions) => api.put(`/users/permissions/${role}`, { permissions }),
+export const dashboardAPI = {
+  getAdminSummary: (params) => api.get('/dashboard/admin-summary', { params }),
 }
 
 export default api

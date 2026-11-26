@@ -306,7 +306,7 @@ const UserManagement = () => {
   const detailLine = (u) => {
     if (u.role === 'doctor') return [u.specialization, u.licenseNumber && `License ${u.licenseNumber}`].filter(Boolean).join(', ')
     if (u.role === 'staff') return [u.department, u.shift && `${u.shift} shift`, u.deskNumber && `Desk ${u.deskNumber}`].filter(Boolean).join(', ')
-    return [u.phone, u.bloodType && `Blood type ${u.bloodType}`].filter(Boolean).join(', ')
+    return u.phone || ''
   }
 
   const currentTab = TABS.find((t) => t.key === tab)
@@ -425,3 +425,4 @@ const UserManagement = () => {
 }
 
 export default UserManagement
+

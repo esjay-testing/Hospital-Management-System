@@ -63,7 +63,7 @@ const Doctors = () => {
     specialization: '',
     licenseNumber: '',
     experience: '',
-    consultationFee: '',
+    department: '',
     address: {
       street: '',
       city: '',
@@ -102,7 +102,7 @@ const Doctors = () => {
           specialization: '',
           licenseNumber: '',
           experience: '',
-          consultationFee: '',
+          department: '',
           address: {
             street: '',
             city: '',
@@ -290,7 +290,7 @@ const Doctors = () => {
         `Specialization: ${doctor.specialization || 'General Practice'}`,
         `License Number: ${doctor.licenseNumber || 'Not provided'}`,
         `Experience: ${formatExperience(doctor.experience)}`,
-        `Consultation Fee: $${doctor.consultationFee || '0'}`,
+        `Department: ${doctor.department || doctor.specialization || 'Unassigned'}`,
         `Status: ${doctor.isActive ? 'Active' : 'Inactive'}`,
         `Availability: ${doctor.isAvailable ? 'Available' : 'Unavailable'}`,
       ]
@@ -390,7 +390,7 @@ const Doctors = () => {
       specialization: '',
       licenseNumber: '',
       experience: '',
-      consultationFee: '',
+      department: '',
       address: {
         street: '',
         city: '',
@@ -746,17 +746,15 @@ const Doctors = () => {
                 </div>
               <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Consultation Fee ($)
+                  Department
                 </label>
                 <input
-                  type="number"
-                  name="consultationFee"
-                  value={newDoctor.consultationFee}
+                  type="text"
+                  name="department"
+                  value={newDoctor.department}
                   onChange={handleInputChange}
-                  min="0"
-                  step="0.01"
                         className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                        placeholder="Consultation fee"
+                        placeholder="e.g. Cardiology"
                 />
               </div>
                 </div>
@@ -1183,7 +1181,7 @@ const EnhancedDoctorCard = ({ doctor, navigate, getInitials, formatExperience, i
         <div className="mt-4 pt-4 border-t border-gray-100">
           <div className="flex items-center justify-between text-xs text-gray-500">
             <span>Doctor ID: {doctor._id.slice(-6)}</span>
-            <span>Fee: ${doctor.consultationFee || '0'}</span>
+            <span>Department: {doctor.department || doctor.specialization || 'Unassigned'}</span>
           </div>
         </div>
       </div>
