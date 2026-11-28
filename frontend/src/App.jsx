@@ -119,7 +119,7 @@ const AppRoutes = () => {
         <Route
           path="patients"
           element={
-            <ProtectedRoute allowedRoles={["admin", "staff"]}>
+            <ProtectedRoute allowedRoles={["staff"]}>
               <Patients />
             </ProtectedRoute>
           }
@@ -127,7 +127,7 @@ const AppRoutes = () => {
         <Route
           path="patients/:id"
           element={
-            <ProtectedRoute allowedRoles={["admin", "staff"]}>
+            <ProtectedRoute allowedRoles={["staff"]}>
               <PatientDetail />
             </ProtectedRoute>
           }
@@ -137,7 +137,7 @@ const AppRoutes = () => {
         <Route
           path="admin/overview"
           element={
-            <ProtectedRoute allowedRoles={["admin", "staff"]}>
+            <ProtectedRoute allowedRoles={["staff"]}>
               <AdminOverview />
             </ProtectedRoute>
           }
@@ -146,7 +146,7 @@ const AppRoutes = () => {
         <Route
           path="admin/users"
           element={
-            <ProtectedRoute allowedRoles={["admin", "staff"]}>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <UserManagement />
             </ProtectedRoute>
           }
@@ -155,7 +155,7 @@ const AppRoutes = () => {
         <Route
           path="admin/scheduling"
           element={
-            <ProtectedRoute allowedRoles={["admin", "staff"]}>
+            <ProtectedRoute allowedRoles={["staff"]}>
               <SchedulingResources />
             </ProtectedRoute>
           }
@@ -164,7 +164,7 @@ const AppRoutes = () => {
         <Route
           path="admin/billing"
           element={
-            <ProtectedRoute allowedRoles={["admin", "staff"]}>
+            <ProtectedRoute allowedRoles={["staff"]}>
               <BillingClaims />
             </ProtectedRoute>
           }
@@ -173,7 +173,11 @@ const AppRoutes = () => {
         {/* Doctor Management */}
         <Route
           path="doctors"
-          element={user?.role === "patient" ? <PatientDoctors /> : <Doctors />}
+          element={
+            <ProtectedRoute allowedRoles={["staff", "patient"]}>
+              {user?.role === "patient" ? <PatientDoctors /> : <Doctors />}
+            </ProtectedRoute>
+           }
         />
 
         {/* Appointments */}

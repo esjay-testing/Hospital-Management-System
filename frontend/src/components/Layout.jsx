@@ -254,15 +254,15 @@ const Layout = () => {
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: Home, roles: ['admin', 'staff', 'doctor', 'patient'] },
-    { name: 'Operations', href: '/admin/overview', icon: ClipboardList, roles: ['admin', 'staff'] },
-    { name: 'Users', href: '/admin/users', icon: Users, roles: ['admin', 'staff'] },
-    { name: 'Patients', href: '/patients', icon: Users, roles: ['admin', 'staff'] },
-    { name: 'Doctors', href: '/doctors', icon: UserCheck, roles: ['admin', 'staff', 'patient'] },
+    { name: 'Operations', href: '/admin/overview', icon: ClipboardList, roles: ['staff'] },
+    { name: 'Users', href: '/admin/users', icon: Users, roles: ['admin'] },
+    { name: 'Scheduling', href: '/admin/scheduling', icon: Calendar, roles: ['staff'] },
+    { name: 'Billing', href: '/admin/billing', icon: CreditCard, roles: ['staff'] },
+    { name: 'Patients', href: '/patients', icon: Users, roles: ['staff'] },
+    { name: 'Doctors', href: '/doctors', icon: UserCheck, roles: ['staff', 'patient'] },
     { name: 'Appointments', href: '/appointments', icon: Calendar, roles: ['staff', 'doctor', 'patient'] },
     { name: 'Medical Records', href: '/medical-records', icon: FileText, roles: ['staff', 'doctor'] },
-    { name: 'Health Cards', href: '/health-cards', icon: CreditCard, roles: ['staff', 'doctor'] },
-    { name: 'Scheduling', href: '/admin/scheduling', icon: Calendar, roles: ['admin', 'staff'] },
-    { name: 'Billing', href: '/admin/billing', icon: CreditCard, roles: ['admin', 'staff'] },
+    { name: 'Health Cards', href: '/health-cards', icon: CreditCard, roles: ['staff'] },
   ]
 
   // Patient-specific navigation (simpler)

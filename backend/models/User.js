@@ -60,6 +60,8 @@ const userSchema = new mongoose.Schema({
   },
   
   // Doctor Information (only for doctors)
+  departments: [String],
+  specializations: [String],
   specialization: String,
   licenseNumber: String,
   experience: Number,
